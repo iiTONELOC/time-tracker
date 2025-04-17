@@ -1,17 +1,19 @@
 import {
+  settings,
+  eventToEdit,
+  deleteEvent,
+  updateEvents,
+  setEventToEdit,
+  clearEventToEdit,
+  setIsEditingEvent,
+} from "../../signals";
+import {
   removeSeconds,
   NonEncryptedEvent,
   dateTzFromYYYYMMDD,
   getDateLocaleString,
   getTimezoneAbbreviation,
 } from "../../utils";
-import {
-  settings,
-  deleteEvent,
-  updateEvents,
-  setEventToEdit,
-  setIsEditingEvent,
-} from "../../signals";
 import { JSX } from "preact/jsx-runtime";
 import { useEffect, useState } from "preact/hooks";
 
@@ -26,6 +28,8 @@ export function EventCard({ event }: Readonly<EventCardProps>): JSX.Element {
   const [isDeleted, setIsDeleted] = useState<boolean>(false);
   const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
   const { eventDate, startTime, endTime, tags, note, elapsedTime } = event;
+
+  const isActive = eventToEdit?.value?.id == event.id;
 
   const formatTime = (time: string, timeZone: string): string => {
     const date = new Date(`${eventDate}T${time}:00`);
@@ -47,8 +51,13 @@ export function EventCard({ event }: Readonly<EventCardProps>): JSX.Element {
   const handleEditClick = (e: Event) => {
     e.preventDefault();
     e.stopPropagation();
-    setEventToEdit(event);
-    setIsEditingEvent(true);
+
+    if (isActive) {
+      clearEventToEdit();
+    } else {
+      setEventToEdit(event);
+      setIsEditingEvent(true);
+    }
     setShow(false);
   };
 
@@ -64,12 +73,18 @@ export function EventCard({ event }: Readonly<EventCardProps>): JSX.Element {
     updateEvents.value = true;
   };
 
+  const active =
+    "border-3 border-indigo-500 dark:border dark:border-blue-500 shadow-[0_0_10px_rgba(99,102,241,0.9)] dark:shadow-[0_0_10px_rgba(59,130,246,0.5)]";
+
   return !isDeleted ? (
     <li
+      title={event.id}
       key={event.id}
       onMouseEnter={() => setShow(true)}
       onMouseLeave={() => setShow(false)}
-      className="rounded-xl p-4 bg-white dark:bg-gray-900 shadow-md border border-gray-200 dark:border-gray-700 mb-2 relative w-[350px]"
+      className={`rounded-xl p-4 bg-white dark:bg-gray-900 shadow-md border border-gray-200 dark:border-gray-700 mb-2 relative w-[450px] ${
+        isActive ? active : ""
+      }`}
     >
       {tags && (
         <h4 className="text-base font-semibold text-gray-900 dark:text-gray-100 mb-2 flex flex-row gap-x-2">
@@ -108,6 +123,7 @@ export function EventCard({ event }: Readonly<EventCardProps>): JSX.Element {
       </p>
       {isMobile && (
         <button
+          title={"Show more"}
           onClick={handleButtonClick}
           className={
             "absolute font-semibold top-0 right-0 mr-4 text-xl hover:text-amber-500 hover:cursor-pointer hover:text-xl"
@@ -119,12 +135,14 @@ export function EventCard({ event }: Readonly<EventCardProps>): JSX.Element {
       {show && (
         <span className={`absolute bottom-4 right-4 flex flex-row gap-x-2`}>
           <button
+            title={isActive ? "Cancel" : "Edit"}
             onClick={handleEditClick}
             className="text-sm text-gray-900 font-semibold hover:text-white bg-amber-400 hover:bg-amber-500 shadow-md rounded-md px-3 py-1 transition-colors duration-200"
           >
-            Edit
+            {isActive ? "Cancel" : "Edit"}
           </button>
           <button
+            title={"Delete"}
             onClick={handleDeleteClick}
             className="text-sm text-white bg-red-600 hover:bg-red-700 shadow-md rounded-md px-3 py-1 transition-colors duration-200"
           >

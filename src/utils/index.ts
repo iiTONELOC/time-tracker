@@ -28,4 +28,5 @@ export const getLocalStorageInt = (key: string, defaultValue: number) => {
 
 export * from "./crypto";
 export * from "./dateTime";
+export * from "./genReport";
 export * from "./localStorageSecure";

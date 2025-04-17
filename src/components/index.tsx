@@ -1,3 +1,4 @@
+export * from "./GenReportButton";
 export * from "./LockScreen/index";
 export { ClockIcon } from "./ClockIcon";
 export { InfoHeader } from "./InfoHeader";

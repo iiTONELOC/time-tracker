@@ -120,6 +120,8 @@ export function NewEntryForm(): JSX.Element {
         tags: eventToEdit.value?.tags ?? "",
         note: eventToEdit.value?.note ?? "",
       }));
+    } else {
+      setFormState(getDefaultState());
     }
   }, [isEditingEvent.value]);
 
@@ -329,7 +331,7 @@ export function NewEntryForm(): JSX.Element {
         </div>
 
         {/* Submit */}
-        <div className="md:col-span-2">
+        <div className="w-full md:col-span-2 flex flex-col items-center justify-center min-h-28">
           <button
             disabled={!isValid}
             onClick={isEditingEvent.value ? handleEdit : handleSubmit}

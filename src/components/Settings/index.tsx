@@ -11,7 +11,7 @@ import {
 const classes = {
   button: ` text-xl flex items-center justify-center px-3 py-2 rounded-md bg-gray-200 dark:bg-gray-700
            hover:bg-gray-300 dark:hover:bg-gray-600 transition-all shadow-md focus:outline-none fixed bottom-4 right-4 z-60`,
-  modalOverlay: `bg-gray-800/70 dark:bg-black/40 bg-opacity-50 z-40 min-h-screen flex flex-col justify-center items-center py-6`,
+  modalOverlay: `bg-gray-800/70 dark:bg-black/40 bg-opacity-50 z-40 min-h-screen flex flex-col justify-center items-center py-6 w-full`,
   modal: `flex flex-col items-center justify-center bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 w-auto
    w-[90%] sm:w-[400px] md:w-[500px] lg:w-[600px] `,
   modalHeader: `flex flex-row w-full justify-between items-center mb-4`,
@@ -25,6 +25,7 @@ export function Settings(): JSX.Element {
     <>
       {/* Settings Gear Button */}
       <button
+        title={"Settings"}
         onClick={toggleShowSettings}
         aria-label="Open settings modal"
         class={stripExtra(classes.button)}
@@ -47,6 +48,7 @@ export function Settings(): JSX.Element {
               <div class={classes.modalHeader}>
                 <h2 class={classes.modalTitle}>App Settings</h2>
                 <button
+                  title={"Close"}
                   onClick={() => setShowSettings(false)}
                   aria-label="Close settings modal"
                   class={stripExtra(classes.closeButton)}

@@ -1,14 +1,16 @@
+import {
+  reportType,
+  getPassword,
+  reportData,
+  isAuthenticated,
+  encryptedEvents,
+  DecryptedEvents,
+} from "../../signals";
+import { batch } from "@preact/signals";
 import { JSX } from "preact/jsx-runtime";
 import { DailyEventCard } from "./DailyCard";
 import { useEffect, useState } from "preact/hooks";
 import { decryptData, NonEncryptedEvent } from "../../utils";
-import { encryptedEvents, getPassword, isAuthenticated } from "../../signals";
-
-type DecryptedEvents = {
-  [key: string]: {
-    event: NonEncryptedEvent;
-  }[];
-};
 
 export function PeriodEvents(): JSX.Element {
   const [groupedEvents, setGroupedEvents] = useState<DecryptedEvents>({});
@@ -47,6 +49,15 @@ export function PeriodEvents(): JSX.Element {
   useEffect(() => {
     (async () => await groupEvents())();
   }, [encryptedEvents.value]);
+
+  useEffect(() => {
+    if (reportType.value !== "none") {
+      batch(() => {
+        reportData.value = groupedEvents;
+        reportType.value = "none";
+      });
+    }
+  }, [reportType.value]);
 
   return isAuthenticated.value ? (
     <div className="w-[95%] flex flex-col items-center justify-start m-auto">
