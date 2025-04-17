@@ -14,7 +14,7 @@ A secure, client-side time tracking PWA designed for remote student workers at t
 
 ## Screenshot
 
-![Screenshot](./assets/screenshots/timelogger.png)
+![Screenshot](./assets/screenshots/screenshot.png)
 
 ## Overview
 
@@ -30,42 +30,10 @@ Time Tracker is a lightweight, browser-based progressive web application, or PWA
 
 ## Usage
 
-The app can be used in the browser or installed on your system as a PWA.
+The app can be used in the browser or [installed on your system as a PWA](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Guides/Installing).
 
-1. **Visit** : [`https://iitoneloc.github.io/time-tracker/`](https://iitoneloc.github.io/time-tracker/)
-   ![Landing](./assets/screenshots/landing.png)
-
-2. **Set a Password**: While NIST, requires a minimum of 8 characters for passwords, `Time Tracker` requires a minimum of 15. For best results, use a password generator and/or password manager. Sessions are set to 30 minutes, and you will have to log back in.  >Note: **Do not lose your password!** Access can be regained, but you won't be able to decrypt previously encrypted data.
-
-3. **Set personal Settings**: Click on the gear located in the bottom right of the screen. Set your desired theme, `Light`, `Dark`, or match the `System's` preference. If not working at the University of Arizona, set your work timezone and pay period. Set your timezone, time display format, and Week 1 start date, this date should match the start of your pay period.
-   ![Settings](./assets/screenshots/settings.png)
-
-4. **Log Time Spent**:
-   ![AddEvent](./assets/screenshots/add%20event.png)
-   **Created**
-   ![Created](./assets/screenshots/created%20event.png)
-
-5. **Edit/Delete Events**:
-   ![EditEvent](./assets/screenshots/edit%20event.png)
-   **Delete Event**
-   ![DeleteEvent](./assets/screenshots/delete%20event.png)
-
-6. **Weekly Report Generation**: `Coming Soon!`
-
-### PWA Installation
-
-`Time Tracker` can be installed on your system as a PWA, and even used offline.
-
-1. **To install, navigate to**: [`https://iitoneloc.github.io/time-tracker/`](https://iitoneloc.github.io/time-tracker/)
-
-2. **Click on the install icon located in the search bar all the way to the right**:  
-   ![Install](./assets/screenshots/install1.png)
-
-3. **Click on Install**  
-   ![Install2](./assets/screenshots/install2.png)
-
-   **Success!**  
-   ![Installed](./assets/screenshots/install3.png)
+**Visit** : [`https://iitoneloc.github.io/time-tracker/`](https://iitoneloc.github.io/time-tracker/)
+  
 
 ## Technologies Used
 
