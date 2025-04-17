@@ -142,7 +142,7 @@ export function EventCard({ event }: Readonly<EventCardProps>): JSX.Element {
       </p>
 
       {/* Note */}
-      <p className="text-sm text-gray-700 dark:text-gray-300 overflow-hidden overflow-ellipsis whitespace-pre-line max-h-[4.5rem] mb-2">
+      <p className="text-sm text-gray-700 dark:text-gray-300 text-wrap truncate m-auto h-full max-h-[10rem] mb-2">
         <strong>Note:</strong> {note || "—"}
       </p>
 
