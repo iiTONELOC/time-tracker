@@ -54,7 +54,7 @@ To set up a local development environment:
 1. **Clone the Repository**:
 
    ```bash
-   git clone [https://github.com/iiTONELOC/time-tracker.git](https://github.com/iiTONELOC/time-tracker.git)
+   git clone https://github.com/iiTONELOC/time-tracker.git
    cd time-tracker
    ```
 
