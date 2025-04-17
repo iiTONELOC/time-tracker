@@ -1,0 +1,10 @@
+{
+  "userTimezone": "America/New_York",
+  "userWorkTimezone": "America/Phoenix",
+  "timeFormat": "12h",
+  "payPeriod": "biweekly",
+  "periodStart": "N/A",
+  "periodEnd": "N/A",
+  "week1Start": "2024-11-25",
+  "weekNumber": 0
+}

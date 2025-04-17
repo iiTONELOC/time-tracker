@@ -1,0 +1,49 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+
+*{
+  scroll-behavior: smooth;
+}
+
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+
+/* make it so scroll bars take no extra width */
+
+
+/* style scroll bars */
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 4px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}
+*::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+}
+
+/* dark mode scroll bars */
+.dark *::-webkit-scrollbar-thumb {
+  background-color: #555;
+}
+.dark *::-webkit-scrollbar-thumb:hover {
+  background-color: #333;
+}
+.dark *::-webkit-scrollbar-track {
+  background-color: #222;
+}
