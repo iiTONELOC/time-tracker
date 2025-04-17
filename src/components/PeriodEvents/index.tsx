@@ -14,19 +14,15 @@ import { decryptData, NonEncryptedEvent } from "../../utils";
 
 export function PeriodEvents(): JSX.Element {
   const [groupedEvents, setGroupedEvents] = useState<DecryptedEvents>({});
-
   const groupEvents = async () => {
-    // Recalculate groupedEvents whenever decryptedEvents changes
     const newGroupedEvents = await Object.entries(encryptedEvents.value).reduce(
       async (accPromise, [key, events]) => {
         const acc = await accPromise;
-        const dateKey = key.split("$")[0]; // Extract the date
+        const dateKey = key.split("$")[0];
 
-        // see if there are events for the day
         if (Object.keys(events).length > 0) {
           acc[dateKey] = acc[dateKey] || [];
 
-          // decrypt dailies
           const decryptedEvents = await Promise.all(
             Object.values(events).map(async (event: string) => {
               const decryptedData = await decryptData(
@@ -36,6 +32,7 @@ export function PeriodEvents(): JSX.Element {
               return { event: JSON.parse(decryptedData) as NonEncryptedEvent };
             })
           );
+
           acc[dateKey] = [...(acc[dateKey] || []), ...decryptedEvents];
         }
         return acc;
@@ -43,7 +40,27 @@ export function PeriodEvents(): JSX.Element {
       Promise.resolve({} as Record<string, { event: NonEncryptedEvent }[]>)
     );
 
-    setGroupedEvents(newGroupedEvents);
+    // Sort events within each day by event.time descending
+    for (const date in newGroupedEvents) {
+      newGroupedEvents[date].sort((a, b) => {
+        const aTime = new Date(
+          `${date}T${a.event.startTime || "00:00"}`
+        ).getTime();
+        const bTime = new Date(
+          `${date}T${b.event.startTime || "00:00"}`
+        ).getTime();
+        return bTime - aTime;
+      });
+    }
+
+    // Sort the grouped days by date descending
+    const sortedGroupedEvents: DecryptedEvents = Object.fromEntries(
+      Object.entries(newGroupedEvents).sort(([dateA], [dateB]) => {
+        return new Date(dateB).getTime() - new Date(dateA).getTime(); // descending
+      })
+    );
+
+    setGroupedEvents(sortedGroupedEvents);
   };
 
   useEffect(() => {
@@ -60,10 +77,12 @@ export function PeriodEvents(): JSX.Element {
   }, [reportType.value]);
 
   return isAuthenticated.value ? (
-    <div className="w-[95%] flex flex-col items-center justify-start m-auto">
-      {Object.entries(groupedEvents).map(([baseDate, events]) => (
-        <DailyEventCard key={baseDate} events={events} baseDate={baseDate} />
-      ))}
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full flex flex-col justify-center items-center gap-6  mb-6">
+        {Object.entries(groupedEvents).map(([baseDate, events]) => (
+          <DailyEventCard key={baseDate} events={events} baseDate={baseDate} />
+        ))}
+      </div>
     </div>
   ) : (
     <></>

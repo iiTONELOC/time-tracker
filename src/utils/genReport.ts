@@ -27,29 +27,40 @@ function getDayAndDate(dateStr: string): string {
     year: "2-digit",
   })}`;
 }
+function formatElapsed(minutes: number): string {
+  const hours = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+  return `${hours}h ${mins}m`;
+}
+
+function roundHours(minutes: number): string {
+  return (minutes / 60).toFixed(4); // 4 decimal places
+}
 
 export function generateReportText(decryptedEvents: DecryptedEvents): string {
   let result = "";
-  // Sort days chronologically
-  const sortedDays = Object.keys(decryptedEvents).sort(
-    (a, b) =>
-      new Date(a.split("$")[0]).getTime() - new Date(b.split("$")[0]).getTime()
-  );
 
-  for (const date of sortedDays) {
-    const dayEvents = decryptedEvents[date]
-      .map((e) => e.event)
-      .sort((a, b) => a.startTime.localeCompare(b.startTime));
+  for (const date in decryptedEvents) {
+    const dayEvents = decryptedEvents[date].map((e) => e.event);
 
-    result += `● ${getDayAndDate(date)}\n`;
+    const totalMinutes = dayEvents.reduce(
+      (sum, event) => sum + (event.elapsedTime ?? 0),
+      0
+    );
+
+    const readable = formatElapsed(totalMinutes);
+    const precise = roundHours(totalMinutes);
+
+    result += `● ${getDayAndDate(date)} — Total: ${readable} (${precise}h)\n`;
 
     for (const event of dayEvents) {
-      const note = event.note.trim().replace(/\s+/g, " ");
+      const note = (event.note || "").trim().replace(/\s+/g, " ");
       const timeRange = formatTimeRange(event.startTime, event.endTime);
       result += `  ○ ${note}. (MST): ${timeRange}\n`;
     }
 
     result += "\n";
   }
+
   return result.trim();
 }

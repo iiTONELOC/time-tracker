@@ -2,7 +2,6 @@ import {
   setTheme,
   startClock,
   setSettings,
-  showSettings,
   isAuthenticated,
   getPreferredTheme,
   getPreferredSettings,
@@ -44,15 +43,10 @@ export function App() {
       ) : (
         <>
           <InfoHeader />
-
           <Settings />
-          {!showSettings.value && (
-            <>
-              <GenerateReportButton />
-              <NewEntryForm />
-              <PeriodEvents />
-            </>
-          )}
+          <GenerateReportButton />
+          <NewEntryForm />
+          <PeriodEvents />
         </>
       )}
     </main>

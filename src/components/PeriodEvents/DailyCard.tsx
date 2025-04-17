@@ -23,10 +23,30 @@ type EventCardProps = {
   event: NonEncryptedEvent;
 };
 
+function Tags({ tags, eventid }: Readonly<{ tags: string; eventid: string }>) {
+  const tagsArray = tags.split(/[\s,.]+/);
+
+  return (
+    <div className="flex flex-wrap gap-2">
+      {tagsArray.map((tag, index) => (
+        <span
+          key={`${tags}-${eventid}-${index}`}
+          className="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-full px-2 py-1 text-xs font-semibold mr-2 mb-2"
+        >
+          <em>#</em> {tag}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+const checkForMobile = () =>
+  /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+
 export function EventCard({ event }: Readonly<EventCardProps>): JSX.Element {
   const [show, setShow] = useState<boolean>(false);
   const [isDeleted, setIsDeleted] = useState<boolean>(false);
-  const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+  const [isMobile, setIsMobile] = useState<boolean>(checkForMobile());
   const { eventDate, startTime, endTime, tags, note, elapsedTime } = event;
 
   const isActive = eventToEdit?.value?.id == event.id;
@@ -57,6 +77,11 @@ export function EventCard({ event }: Readonly<EventCardProps>): JSX.Element {
     } else {
       setEventToEdit(event);
       setIsEditingEvent(true);
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
     }
     setShow(false);
   };
@@ -80,60 +105,61 @@ export function EventCard({ event }: Readonly<EventCardProps>): JSX.Element {
     <li
       title={event.id}
       key={event.id}
-      onMouseEnter={() => setShow(true)}
-      onMouseLeave={() => setShow(false)}
-      className={`rounded-xl p-4 bg-white dark:bg-gray-900 shadow-md border border-gray-200 dark:border-gray-700 mb-2 relative w-[450px] ${
+      onMouseEnter={() => setIsMobile(true)}
+      onMouseLeave={() => setIsMobile(false)}
+      className={`rounded-xl p-4 bg-white dark:bg-gray-900 shadow-md border border-gray-200 dark:border-gray-700 mb-2 relative min-w-[18rem] max-w-[18rem] h-80 ${
         isActive ? active : ""
       }`}
     >
-      {tags && (
-        <h4 className="text-base font-semibold text-gray-900 dark:text-gray-100 mb-2 flex flex-row gap-x-2">
-          <em>#</em> {tags}
+      {/* Elapsed Time at Top */}
+      <div className="text-sm font-semibold text-indigo-600 dark:text-indigo-400 mb-2">
+        ⏱ Elapsed: {elapsedTime.toFixed(4)} hrs
+      </div>
+
+      {/* Tags */}
+      {tags && tags.length > 0 && (
+        <h4 className="text-base font-semibold text-gray-900 dark:text-gray-100 mb-2 flex flex-wrap gap-x-2">
+          <Tags tags={tags} eventid={event.id as string} />
         </h4>
       )}
 
-      {/* Work time */}
-      <p className="text-base text-gray-700 dark:text-gray-300 underline underline-offset-4 mb-2">
+      {/* Work Time */}
+      <p className="text-base text-gray-700 dark:text-gray-300 underline underline-offset-4 mb-1">
         {removeSeconds(workStartTimeFormatted)} –{" "}
-        {removeSeconds(workEndTimeFormatted)}{" "}
-        <span className={"text-[.7rem] dark:text-gray-400"}>
+        {removeSeconds(workEndTimeFormatted)}
+        <span className="ml-1 text-[.7rem] text-gray-500 dark:text-gray-400">
           ({getTimezoneAbbreviation(userWorkTimezone)})
         </span>
       </p>
 
       {/* Local Time */}
-      <em>
-        <p className="text-sm text-gray-700 dark:text-gray-300 -mt-2">
-          {removeSeconds(localStartTimeFormatted)} –{" "}
-          {removeSeconds(localEndTimeFormatted)}{" "}
-          <span className={"text-[.7rem] dark:text-gray-400"}>
-            ({getTimezoneAbbreviation(userTimezone)})
-          </span>
-        </p>
-      </em>
-
-      {/* Stored Elapsed */}
-      <p className="text-sm text-gray-700 dark:text-gray-300  my-2">
-        <strong>Elapsed:</strong> {elapsedTime.toFixed(4)} hrs
+      <p className="text-sm italic text-gray-600 dark:text-gray-400 -mt-1 mb-2">
+        {removeSeconds(localStartTimeFormatted)} –{" "}
+        {removeSeconds(localEndTimeFormatted)}
+        <span className="ml-1 text-[.7rem]">
+          ({getTimezoneAbbreviation(userTimezone)})
+        </span>
       </p>
 
-      {/* Optional Note */}
-      <p className="text-sm text-gray-700 dark:text-gray-300">
+      {/* Note */}
+      <p className="text-sm text-gray-700 dark:text-gray-300 overflow-hidden overflow-ellipsis whitespace-pre-line max-h-[4.5rem] mb-2">
         <strong>Note:</strong> {note || "—"}
       </p>
+
+      {/* Mobile Actions Button */}
       {isMobile && (
         <button
-          title={"Show more"}
+          title="Show more"
           onClick={handleButtonClick}
-          className={
-            "absolute font-semibold top-0 right-0 mr-4 text-xl hover:text-amber-500 hover:cursor-pointer hover:text-xl"
-          }
+          className="absolute font-semibold top-0 right-0 mr-4 text-xl hover:text-amber-500 cursor-pointer"
         >
           …
         </button>
       )}
+
+      {/* Edit/Delete Buttons */}
       {show && (
-        <span className={`absolute bottom-4 right-4 flex flex-row gap-x-2`}>
+        <div className="absolute bottom-4 right-4 flex flex-row gap-x-2">
           <button
             title={isActive ? "Cancel" : "Edit"}
             onClick={handleEditClick}
@@ -142,13 +168,13 @@ export function EventCard({ event }: Readonly<EventCardProps>): JSX.Element {
             {isActive ? "Cancel" : "Edit"}
           </button>
           <button
-            title={"Delete"}
+            title="Delete"
             onClick={handleDeleteClick}
             className="text-sm text-white bg-red-600 hover:bg-red-700 shadow-md rounded-md px-3 py-1 transition-colors duration-200"
           >
             Delete
           </button>
-        </span>
+        </div>
       )}
     </li>
   ) : (
@@ -178,7 +204,7 @@ export function DailyEventCard({
   return events.length > 0 ? (
     <section // NOSONAR
       key={baseDate}
-      className=" w-full rounded-2xl bg-gray-50 dark:bg-gray-800 p-4 shadow-md mb-6 border border-gray-200 dark:border-gray-700"
+      className="w-full rounded-2xl bg-gray-50 dark:bg-gray-800 p-4 shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden"
     >
       {/* Header */}
       <div className="w-full flex justify-between items-center text-left focus:outline-none">
@@ -200,9 +226,11 @@ export function DailyEventCard({
 
       {/* Expandable Event List */}
       {expanded && (
-        <ul className="mt-4 space-y-2 transition-all duration-300 ease-in-out flex flex-wrap flex-row gap-4 justify-around items-stretch">
+        <ul className="w-full flex flex-row  gap-4 py-2 overflow-x-auto   ">
           {events.map(({ event }) => (
-            <EventCard event={event} key={event.id} />
+            <li key={event.id} className="snap-center ">
+              <EventCard event={event} />
+            </li>
           ))}
         </ul>
       )}

@@ -35,7 +35,7 @@ export function GenerateReportButton(): JSX.Element {
   const handleCopy = () => {
     navigator.clipboard.writeText(reportText);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setTimeout(() => setCopied(false), 3500);
   };
 
   useEffect(() => {
@@ -56,13 +56,13 @@ export function GenerateReportButton(): JSX.Element {
         <div class="relative">
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="w-16 mt-3 bg-white hover:text-indigo-500 hover:bg-gray-100/80 text-gray-800 dark:bg-gray-700 hover:dark:bg-gray-800 dark:text-gray-200 dark:hover:text-sky-400 text-4xl p-4 rounded-md text-center mr-0 md:mr-5 mb-[-3rem]"
+            className="w-16 mt-3 bg-white hover:text-indigo-500 hover:bg-gray-100/80 text-gray-800 dark:bg-gray-700 hover:dark:bg-gray-800 dark:text-gray-200 dark:hover:text-sky-400 text-4xl p-2 rounded-md text-center mr-0 md:mr-5 mb-[-3rem]"
           >
             🖶
           </button>
 
           {isOpen && (
-            <div class="absolute mt-6 left-1/2 -translate-x-1/2  lg:-translate-x-[90%] z-10 w-64 origin-top rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5">
+            <div class="absolute mt-6 left-1/2 -translate-x-1/2  lg:-translate-x-[91%] z-10 w-64 origin-top rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5">
               <div class="py-1">
                 <button
                   class="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -93,7 +93,13 @@ export function GenerateReportButton(): JSX.Element {
           <div class="bg-white dark:bg-gray-800 text-sm text-gray-900 dark:text-gray-100 max-w-3xl w-full p-6 rounded-xl shadow-xl relative transform transition-all duration-300 scale-100 opacity-100">
             <button
               class="absolute top-3 right-4 text-lg text-gray-400 hover:text-red-500"
-              onClick={() => setShowModal(false)}
+              onClick={() => {
+                setShowModal(false);
+                setReportText("");
+                setCopied(false);
+                reportData.value = {};
+                reportType.value = "none";
+              }}
             >
               ✖
             </button>
